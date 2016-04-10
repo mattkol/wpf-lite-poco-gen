@@ -1,0 +1,195 @@
+﻿<Controls:MetroWindow x:Class="PocoGen.UI.Shell"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:st="clr-namespace:AutoGrid;assembly=SpicyTaco.AutoGrid"
+                      xmlns:converters="clr-namespace:PocoGen.UI.Converters"
+                      xmlns:models="clr-namespace:PocoGen.UI.Models"
+                      xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+                      xmlns:command="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+                      xmlns:ui="clr-namespace:PocoGen.UI" xmlns:behaviors="clr-namespace:PocoGen.UI.Behaviors"
+                      BorderThickness="0" 
+                      GlowBrush="Black"
+                      ResizeMode="CanResizeWithGrip"
+                      WindowTransitionsEnabled="False"
+                      WindowStartupLocation="CenterScreen"
+                      Title="Lite Poco Gen" MinHeight="600" MinWidth="900"  Height="600" Width="900">
+
+    <Controls:MetroWindow.DataContext>
+        <ui:ShellViewModel/>
+    </Controls:MetroWindow.DataContext>
+    
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button Content="help" />
+            <Button Content="about" />
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
+
+    <Controls:MetroWindow.Resources>
+        <converters:EnumMatchToBooleanConverter x:Key="EnumConverter" />
+        <converters:EnumToGridRowHeightConverter x:Key="EnumGridConverter" />
+        <converters:BoolToVisibilityConverter x:Key="VisibilityConverter"/>
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource AccentedSquareButtonStyle}"/>
+    </Controls:MetroWindow.Resources>    
+    
+        <Grid Margin="20">
+        <st:AutoGrid Rows="220,5,Auto,10,1,*" Columns="*">
+
+            <!--  Top Row -->
+            <st:AutoGrid Rows="*" Columns="Auto,360,340,*">
+
+                <!--  Database Connection -->
+                <st:AutoGrid Rows="Auto,Auto,Auto,5,Auto,*" Columns="*">
+                    <Label Content="Database Connection" FontWeight="Bold" FontStyle="Italic" FontSize="16" />
+                    
+                    <st:AutoGrid Rows="Auto" Columns="Auto,*" Margin="10,10,0,10">
+                        <Label Content="Db Type"></Label>
+                        <ComboBox IsEditable="False" ItemsSource="{Binding Path=DatabaseTypeItems}" SelectedIndex="{Binding Path=SelectedIndexDatabaseType}" SelectedItem="{Binding Path=SelectedDatabaseTypeItem}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <command:EventToCommand Command="{Binding Mode=OneWay, Path=DatabaseTypeSelectionChangedCommand}" PassEventArgsToCommand="False" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                    </st:AutoGrid>
+                    
+                    <RadioButton Content="Use Connection Strings"  IsChecked="{Binding Path=DbInfoOption, Mode=TwoWay, Converter={StaticResource EnumConverter}, ConverterParameter=ConnectionString}" Margin="10,0,0,0" />
+                    <Label></Label>
+                    <RadioButton Content="Add Manually"  IsChecked="{Binding Path=DbInfoOption, Mode=TwoWay, Converter={StaticResource EnumConverter}, ConverterParameter=Manually}" Margin="10,0,0,0" />
+                </st:AutoGrid>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition>
+                            <RowDefinition.Height>
+                                <MultiBinding Converter="{StaticResource EnumGridConverter}">
+                                    <Binding  Path="DbInfoEntryOption" />
+                                    <Binding  Source="{x:Static models:DbInfoOption.ConnectionString}" />
+                                </MultiBinding>
+                            </RowDefinition.Height>
+                        </RowDefinition>
+                        <RowDefinition>
+                            <RowDefinition.Height>
+                                <MultiBinding Converter="{StaticResource EnumGridConverter}">
+                                    <Binding  Path="DbInfoEntryOption" />
+                                    <Binding  Source="{x:Static models:DbInfoOption.Manually}" />
+                                </MultiBinding>
+                            </RowDefinition.Height>
+                        </RowDefinition>
+                        <RowDefinition>
+                            <RowDefinition.Height>
+                                <MultiBinding Converter="{StaticResource EnumGridConverter}">
+                                    <Binding  Path="DbInfoEntryOption" />
+                                    <Binding  Source="{x:Static models:DbInfoOption.File}" />
+                                </MultiBinding>
+                            </RowDefinition.Height>
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!--  Switchable - Connection String view -->
+                    <Grid Grid.Row="0" Margin="40,20,40,20">
+                        <st:AutoGrid Rows="Auto,*" Columns="*">
+                            <ComboBox IsEditable="False" ItemsSource="{Binding Path=ConnectionStringItems}" SelectedIndex="{Binding Path=SelectedIndexConnectionString}" SelectedItem="{Binding Path=SelectedConnectionStringItem}">
+                            </ComboBox>
+                        </st:AutoGrid>
+                    </Grid>
+                    <!-- End: Switchable - Connection String view -->
+
+                    <!--  Switchable - Add manually view -->
+                    <Grid Grid.Row="1"  Margin="20">
+                        <st:AutoGrid Rows="Auto" Columns="120,*" ChildMargin="2">
+                            <Label Content="Server:" HorizontalAlignment="Right"/>
+                            <TextBox Text="{Binding Path=Server,  Mode=TwoWay}"/>
+                            <Label Content="Database:"  HorizontalAlignment="Right"/>
+                            <TextBox Text="{Binding Path=Database,  Mode=TwoWay}"/>
+                            <Label Content="Port:"  ToolTip="For MsSQL add port in Server." HorizontalAlignment="Right"/>
+                            <TextBox Text="{Binding Path=Port,  Mode=TwoWay}"  ToolTip="For MsSQL add port in Server." Width="60" HorizontalAlignment="Left" IsEnabled="{Binding Path=PortRequired}"/>
+                            <Label Content="Username:"  HorizontalAlignment="Right" IsEnabled="{Binding Path=EnabledForAuthentication}"/>
+                            <TextBox Text="{Binding Path=Username,  Mode=TwoWay}" IsEnabled="{Binding Path=EnabledForAuthentication}" />
+                            <Label Content="Password:"  HorizontalAlignment="Right"  IsEnabled="{Binding Path=EnabledForAuthentication}"/>
+                            <TextBox Text="{Binding Path=Password,  Mode=TwoWay}"  IsEnabled="{Binding Path=EnabledForAuthentication}"/>
+                            <Label HorizontalAlignment="Right"/>
+                            <CheckBox Content="Use Windows Authentication" ToolTip="Windows Authentication not yet implemented for MySql and Postgres. Please use ConnectionString option for MySql and Postgres Windows Authentication." IsChecked="{Binding Path=UseWindowsAuthentication}" />
+                        </st:AutoGrid>
+                    </Grid>
+                    <!--  End: Switchable - Add manually view -->
+
+                    <!--  Switchable - Add file view -->
+                    <Grid Grid.Row="2"  Margin="20">
+                        <st:AutoGrid Rows="Auto" Columns="140,*" ChildMargin="2">
+                            <Label Content="File full path:" HorizontalAlignment="Right"/>
+                            <TextBox Text="{Binding Path=SqliteFile,  Mode=TwoWay}"/>
+                            <Label />
+                            <TextBlock Width="60"  HorizontalAlignment="Left" >                                
+                                <Hyperlink Command="{Binding Path=SelectSqliteFileCommand}">Browse
+                                </Hyperlink>
+                            </TextBlock>
+                            <Label />
+                            <Label />
+                        </st:AutoGrid>
+                    </Grid>
+                    <!--  End: Switchable - Add file view -->
+                    
+                </Grid>
+
+                <st:AutoGrid Rows="Auto" Columns="140,*" ChildMargin="2" Margin="20">
+                    <Label Content="Namespace:" HorizontalAlignment="Right"/>
+                    <TextBox Text="{Binding Path=Namespace,  Mode=TwoWay}"/>
+                    <Label HorizontalAlignment="Right"/>
+                    <CheckBox Content="Include Relationships" IsChecked="{Binding Path=IncludeRelationship}" />
+                    <Label />
+                    <Label />
+                    <Label Content="Models Folder Location:" HorizontalAlignment="Right"/>
+                    <TextBox Text="{Binding Path=ModelsFolderLocation,  Mode=TwoWay}"/>
+                    <Label />
+                    <TextBlock Width="60"  HorizontalAlignment="Left" >                                
+                                <Hyperlink Command="{Binding Path=SelectModelFolderLocationCommand}">Browse
+                                </Hyperlink>
+                    </TextBlock>
+                </st:AutoGrid>
+                <Grid></Grid>
+            </st:AutoGrid>
+
+            <Grid></Grid>
+            <!--  Generate Button-->
+            <st:AutoGrid Rows="Auto" Columns="*,600,*,Auto,20" ChildHorizontalAlignment="Center">
+                <Label></Label>
+                <st:AutoGrid Rows="Auto" Columns="*,20,Auto" Visibility="{Binding Path=ShowBuildrogress, Converter={StaticResource VisibilityConverter}}" ChildHorizontalAlignment="Center" >
+                    <Controls:MetroProgressBar IsIndeterminate="True" Width="500" />
+                    <Label></Label>
+                    <Label Content=".. building poco objects" FontSize="12" FontStyle="Italic" />
+                </st:AutoGrid>
+                <Label></Label>
+                <Button Content="Generate"  Command="{Binding Path=GenerateCommand}"  HorizontalAlignment="Center" Width="70" VerticalContentAlignment="Center"/>
+                <Label></Label>
+            </st:AutoGrid>
+            <Grid></Grid>
+            <!--  Divider Row -->
+            <Border BorderBrush="DarkGray"  BorderThickness="1" ></Border>
+            <!--  End Divider Row -->
+            
+            <!--  Bottom Row -->
+            <st:AutoGrid Rows="*" Columns="180,*">
+                <st:AutoGrid Rows="Auto,10,*" Columns="*">
+                    <Label Content="Processed Files"  FontWeight="Bold" FontStyle="Italic" FontSize="16"  />
+                    <Label></Label>
+                    <Grid>
+                        <ListBox ItemsSource="{Binding Path=FileItems}" SelectedItem="{Binding Path=SelectedFile}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <command:EventToCommand Command="{Binding Mode=OneWay, Path=FileSelectionChangedCommand}" PassEventArgsToCommand="False" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ListBox>
+                    </Grid>
+                </st:AutoGrid>
+                <st:AutoGrid Rows="Auto,10,*" Columns="*">
+                    <Label Content="File Viewer" FontWeight="Bold" FontStyle="Italic" FontSize="16" />
+                    <Label></Label>
+                    <FlowDocumentScrollViewer behaviors:FlowDocumentSourceBehavior.DocumentSource="{Binding Path=DataContext.DocumentSource, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=FrameworkElement}}"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+                </st:AutoGrid>
+            </st:AutoGrid>
+        </st:AutoGrid>
+    </Grid>
+</Controls:MetroWindow>
