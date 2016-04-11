@@ -4,11 +4,7 @@ This is a lite Poco generation tool that uses t4 template. It is "lite" because 
 
 While Dapper.SimpleCRUD, PetaPoco, and OrmLite uses build time t4 processing, the solution uses runtime t4 processing - https://msdn.microsoft.com/en-us/library/ee844259.aspx
 
-* The solution supports
-  * MsSql
-  * Sqlite
-  * MySql
-  * PostgresSql
+The solution supports **MsSql**, **Sqlite**, **MySql** and **PostgreSql**
   
 There are 2 approaches - a WPF MVVM UI and a Console App. There are sample executable files in the Executables folder.
 
