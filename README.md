@@ -1,6 +1,6 @@
 # WPF Lite Poco Generator
 
-This is a lite Poco generation tool that uses t4 template. It is "lite" because it is meant to support lite .NET ORM's like [Dapper](https://github.com/StackExchange/dapper-dot-net), [PetaPoco](http://www.toptensoftware.com/petapoco/), [OrmLite](http://ormlite.com/). It is designed to primary create models for the [Dapper.SimpleCRUD](https://github.com/ericdc1/Dapper.SimpleCRUD) project but can be easily modified for other lite ORM's. The solution extends the [template](https://github.com/ericdc1/Dapper.SimpleCRUD/wiki/T4-Template) provided by Dapper.SimpleCRUD for MsSql, and PetaPoco, OrmLite t4 templates for MySql and PostgreSql. I added implementation for Sqlite.
+This is a lite Poco generation tool that uses t4 template. It is "lite" because it is meant to support lite .NET ORM's like [Dapper](https://github.com/StackExchange/dapper-dot-net), [PetaPoco](http://www.toptensoftware.com/petapoco/), [OrmLite](http://ormlite.com/). It is designed to create models for the [Dapper.SimpleCRUD](https://github.com/ericdc1/Dapper.SimpleCRUD) project but can be easily modified for other lite ORM's. The solution extends the [template](https://github.com/ericdc1/Dapper.SimpleCRUD/wiki/T4-Template) provided by Dapper.SimpleCRUD for MsSql, and PetaPoco, OrmLite t4 templates for MySql and PostgreSql. I added implementation for Sqlite.
 
 While Dapper.SimpleCRUD, PetaPoco, and OrmLite uses build time t4 processing, the solution uses runtime t4 processing - https://msdn.microsoft.com/en-us/library/ee844259.aspx
 
